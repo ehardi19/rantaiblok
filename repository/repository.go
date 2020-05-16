@@ -22,6 +22,7 @@ type Repository interface {
 	GetAllAkta() ([]model.Akta, error)
 	GetAktaByID(id int) (model.Akta, error)
 	GetAktaByAktaNum(aktaNum string) (model.Akta, error)
+	DeleteAktaByID(id int) error
 }
 
 type databaseRepository struct {

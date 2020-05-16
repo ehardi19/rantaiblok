@@ -10,15 +10,21 @@ import (
 // IsValid ...
 func (s *Service) IsValid() (bool, error) {
 	// Checking validity of Node 1
+	count1, err := s.Node1.Count()
+	if err != nil {
+		logrus.Error(err)
+		return false, err
+	}
+
 	node1, err := s.Node1.GetAllBlock()
 	if err != nil {
 		logrus.Error(err)
 		return false, err
 	}
 
-	for i := 1; i < len(node1)-1; i++ {
+	for i := 1; i < count1; i++ {
+		prevBlock := node1[i-1]
 		block := node1[i]
-		nextBlock := node1[i+1]
 
 		hashedBlock := block.GenerateHash()
 
@@ -26,7 +32,7 @@ func (s *Service) IsValid() (bool, error) {
 			return false, err
 		}
 
-		if block.Hash != nextBlock.PrevHash {
+		if block.PrevHash != prevBlock.Hash {
 			return false, err
 		}
 	}
@@ -38,9 +44,15 @@ func (s *Service) IsValid() (bool, error) {
 		return false, err
 	}
 
-	for i := 1; i < len(node2)-1; i++ {
+	count2, err := s.Node2.Count()
+	if err != nil {
+		logrus.Error(err)
+		return false, err
+	}
+
+	for i := 1; i < count2; i++ {
+		prevBlock := node2[i-1]
 		block := node2[i]
-		nextBlock := node2[i+1]
 
 		hashedBlock := block.GenerateHash()
 
@@ -48,7 +60,7 @@ func (s *Service) IsValid() (bool, error) {
 			return false, err
 		}
 
-		if block.Hash != nextBlock.PrevHash {
+		if block.PrevHash != prevBlock.Hash {
 			return false, err
 		}
 	}
@@ -60,9 +72,15 @@ func (s *Service) IsValid() (bool, error) {
 		return false, err
 	}
 
-	for i := 1; i < len(node3)-1; i++ {
+	count3, err := s.Node3.Count()
+	if err != nil {
+		logrus.Error(err)
+		return false, err
+	}
+
+	for i := 1; i < count3; i++ {
+		prevBlock := node3[i-1]
 		block := node3[i]
-		nextBlock := node3[i+1]
 
 		hashedBlock := block.GenerateHash()
 
@@ -70,23 +88,25 @@ func (s *Service) IsValid() (bool, error) {
 			return false, err
 		}
 
-		if block.Hash != nextBlock.PrevHash {
+		if block.PrevHash != prevBlock.Hash {
 			return false, err
 		}
 	}
 
-	if !(len(node1) == len(node2) && len(node2) == len(node3)) {
+	// Checking length
+	if !(count1 == count2 && count2 == count3) {
 		return false, nil
 	}
 
-	for i := 0; i < len(node1); i++ {
+	// Checking data between nodes
+	for i := 0; i < count1; i++ {
 		if !(node1[i] == node2[i] && node2[i] == node3[i]) {
-			logrus.Println(node1[i])
 			return false, nil
 		}
 	}
 
 	return true, nil
+
 }
 
 // SaveBlock ...
@@ -105,7 +125,7 @@ func (s *Service) SaveBlock(req model.CreateBlockRequest) error {
 		return err
 	}
 	prevID := count
-	prevHash := lastBlock.PrevHash
+	prevHash := lastBlock.Hash
 	timestamp := time.Now().String()
 
 	block, err := model.GenerateNewBlock(

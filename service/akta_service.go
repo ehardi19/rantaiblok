@@ -49,3 +49,8 @@ func (s *Service) GetAktaByAktaNum(aktaNum string) (model.Akta, error) {
 
 	return akta, err
 }
+
+// DeleteAktaByID ...
+func (s *Service) DeleteAktaByID(id int) error {
+	return nil
+}

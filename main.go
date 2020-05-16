@@ -45,10 +45,10 @@ func initGenesis(node1, node2, node3 repository.Repository) error {
 
 	genesis := model.Block{
 		ID:        0,
-		Data:      "genesis",
 		Timestamp: "",
-		Hash:      "",
+		Nonce:     0,
 		PrevHash:  "",
+		Data:      "genesis",
 	}
 
 	// Saving to Node1

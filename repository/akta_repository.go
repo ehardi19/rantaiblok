@@ -16,6 +16,12 @@ func (repo *databaseRepository) GetAllAkta() (aktas []model.Akta, err error) {
 	return
 }
 
+func (repo *databaseRepository) QueryAllFakta(offset, limit int) (aktas []model.Akta, err error) {
+	err = repo.DB.Offset(offset).Limit(limit).Find(&aktas).Error
+
+	return
+}
+
 func (repo *databaseRepository) GetAktaByID(id int) (akta model.Akta, err error) {
 	err = repo.DB.Where("id = ?", id).Find(&akta).Error
 
@@ -24,6 +30,13 @@ func (repo *databaseRepository) GetAktaByID(id int) (akta model.Akta, err error)
 
 func (repo *databaseRepository) GetAktaByAktaNum(aktaNum string) (akta model.Akta, err error) {
 	err = repo.DB.Where("akta_number = ?", aktaNum).Find(&akta).Error
+
+	return
+}
+
+func (repo *databaseRepository) DeleteAktaByID(id int) (err error) {
+	var akta model.Akta
+	err = repo.DB.Where("id = ?", id).Delete(&akta).Error
 
 	return
 }
