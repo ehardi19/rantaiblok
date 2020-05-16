@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Repository ..
+// Repository defines repository and its available queries
 type Repository interface {
 	SaveBlock(block model.Block) error
 	GetAllBlock() ([]model.Block, error)
@@ -24,11 +24,12 @@ type Repository interface {
 	DeleteAktaByID(id int) error
 }
 
+// databaseRepository implements repository that has GORM (object relation mapping) of database
 type databaseRepository struct {
 	*gorm.DB
 }
 
-// Init ..
+// InitNode1 represents database configuration of Node1
 func InitNode1() Repository {
 	godotenv.Load()
 	dbHost := os.Getenv("NODE1_HOST")
@@ -47,6 +48,7 @@ func InitNode1() Repository {
 	return &databaseRepository{db}
 }
 
+// InitNode2 represents database configuration of Node2
 func InitNode2() Repository {
 	godotenv.Load()
 	dbHost := os.Getenv("NODE2_HOST")
@@ -65,6 +67,7 @@ func InitNode2() Repository {
 	return &databaseRepository{db}
 }
 
+// InitNode3 represents database configuration of Node3
 func InitNode3() Repository {
 	godotenv.Load()
 	dbHost := os.Getenv("NODE3_HOST")
@@ -83,6 +86,7 @@ func InitNode3() Repository {
 	return &databaseRepository{db}
 }
 
+// InitPool represents database configuration of Data Pool
 func InitPool() Repository {
 	godotenv.Load()
 	dbHost := os.Getenv("POOL_HOST")

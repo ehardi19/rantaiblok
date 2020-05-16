@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// SaveAkta ...
+// SaveAkta handles saving akta
 func (h *Handler) SaveAkta(c echo.Context) error {
 	var akta model.Akta
 
@@ -29,7 +29,7 @@ func (h *Handler) SaveAkta(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"created_at": time.Now()})
 }
 
-// GetAllAkta ...
+// GetAllAkta handles getting all akta
 func (h *Handler) GetAllAkta(c echo.Context) error {
 	aktas, err := h.Service.GetAllAkta()
 
@@ -40,7 +40,7 @@ func (h *Handler) GetAllAkta(c echo.Context) error {
 	return c.JSON(http.StatusOK, aktas)
 }
 
-// GetAktaByID ...
+// GetAktaByID handles getting an akta by id
 func (h *Handler) GetAktaByID(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -55,7 +55,7 @@ func (h *Handler) GetAktaByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, akta)
 }
 
-// DeleteAktaByID ...
+// DeleteAktaByID handles deleting an akta
 func (h *Handler) DeleteAktaByID(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

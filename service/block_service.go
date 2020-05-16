@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// IsValid ...
+// IsValid checks validity of blockchain
 func (s *Service) IsValid() (bool, error) {
 	// Checking validity of Node 1
 	count1, err := s.Node1.Count()
@@ -111,7 +111,7 @@ func (s *Service) IsValid() (bool, error) {
 
 }
 
-// SaveBlock ...
+// SaveBlock makes new block and saves it to all nodes
 func (s *Service) SaveBlock(req model.CreateBlockRequest) error {
 	count, err := s.Node1.Count()
 	if err != nil {
@@ -166,7 +166,7 @@ func (s *Service) SaveBlock(req model.CreateBlockRequest) error {
 	return nil
 }
 
-// GetAllBlock ...
+// GetAllBlock gets all block from blockchain
 func (s *Service) GetAllBlock() ([]model.Block, error) {
 	blocks, err := s.Node1.GetAllBlock()
 	if err != nil {
@@ -177,7 +177,7 @@ func (s *Service) GetAllBlock() ([]model.Block, error) {
 	return blocks, err
 }
 
-// GetLastBlock ...
+// GetLastBlock gets last block of blockchain
 func (s *Service) GetLastBlock() (model.Block, error) {
 	block, err := s.Node1.GetLastBlock()
 	if err != nil {
@@ -188,7 +188,7 @@ func (s *Service) GetLastBlock() (model.Block, error) {
 	return block, err
 }
 
-// GetBlockByID ...
+// GetBlockByID gets block by ID (int) of blockchain
 func (s *Service) GetBlockByID(id int) (model.Block, error) {
 	block, err := s.Node1.GetBlockByID(id)
 	if err != nil {
@@ -199,7 +199,8 @@ func (s *Service) GetBlockByID(id int) (model.Block, error) {
 	return block, err
 }
 
-// PushDataToBlock ...
+// PushDataToBlock process data in data pool to blockchain nodes
+// In this case every 3 data in pool created into 1 block data
 func (s *Service) PushDataToBlock() error {
 	// Fetch Pool Database
 	aktas, err := s.Pool.GetAllAkta()

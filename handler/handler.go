@@ -9,26 +9,26 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Handler ..
+// Handler defines structure of handler and all available functions
 type Handler struct {
 	Service service.Service
 }
 
-// InitHandler ..
+// InitHandler creates new handler of given service
 func InitHandler(service service.Service) Handler {
 	h := Handler{service}
 
 	return h
 }
 
-// HelloWorld ..
+// HelloWorld ...
 func (h *Handler) HelloWorld(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, echo.Map{
 		"hello": "world",
 	})
 }
 
-// ResponseError ..
+// ResponseError ...
 type ResponseError struct {
 	Message string `json:"message"`
 }
@@ -44,6 +44,7 @@ var (
 	ErrBadParamInput = errors.New("Given Param is not valid")
 )
 
+// getStatusCode converts given error to http error format
 func getStatusCode(err error) int {
 	if err == nil {
 		return http.StatusOK

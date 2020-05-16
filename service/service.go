@@ -4,7 +4,7 @@ import (
 	"github.com/ehardi19/rantaiblok/repository"
 )
 
-// Service ...
+// Service defines how service build and all available services
 type Service struct {
 	Node1 repository.Repository
 	Node2 repository.Repository
@@ -12,7 +12,7 @@ type Service struct {
 	Pool  repository.Repository
 }
 
-// New ...
+// New creates new services using nodes and data pool
 func New() Service {
 	return Service{
 		Node1: repository.InitNode1(),
