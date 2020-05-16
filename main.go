@@ -1,67 +1,54 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/ehardi19/rantaiblok/blockchain"
-	"github.com/ehardi19/rantaiblok/blockchain/delivery/http"
-	"github.com/ehardi19/rantaiblok/blockchain/repository"
-	"github.com/ehardi19/rantaiblok/blockchain/usecase"
-	"github.com/ehardi19/rantaiblok/middleware"
-	"github.com/ehardi19/rantaiblok/models"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/joho/godotenv"
+	"github.com/ehardi19/rantaiblok/handler"
+	"github.com/ehardi19/rantaiblok/model"
+	"github.com/ehardi19/rantaiblok/repository"
+	"github.com/ehardi19/rantaiblok/service"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
-	godotenv.Load()
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbName := os.Getenv("DB_NAME")
-	dbPass := os.Getenv("DB_PASSWORD")
-	port := os.Getenv("PORT")
 
-	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass))
-	if err != nil {
-		panic(fmt.Sprintf("failed to connect to database: %v", err))
-	}
-
+	s := service.New()
+	h := handler.InitHandler(s)
 	e := echo.New()
-	middL := middleware.InitMiddleware()
-	e.Use(middL.CORS)
 
-	repo := repository.NewGormRepository(db)
-	usecase := usecase.NewUsecase(repo)
-
-	err = initGenesis(repo)
+	err := initGenesis(s.Repo)
 	if err != nil {
 		log.Fatal(err)
 	}
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
 
-	http.NewHandler(e, usecase)
-	e.Logger.Fatal(e.Start(port))
+	e.GET("/", h.HelloWorld)
+	e.GET("/block", h.GetAllBlock)
+	e.GET("/block/:id", h.GetBlockByID)
+	e.GET("/block/last", h.GetLastBlock)
+	e.POST("/block", h.SaveBlock)
+	e.GET("/valid", h.IsValid)
+	e.Logger.Fatal(e.Start(":8000"))
 }
 
-func initGenesis(repo blockchain.Repository) error {
-	check, _ := repo.Fetch()
+func initGenesis(repo repository.Repository) error {
+	check, _ := repo.GetAllBlock()
 
 	if len(check) > 0 {
 		return nil
 	}
 
-	genesis := models.Block{
+	genesis := model.Block{
 		ID:        0,
 		Data:      "genesis",
 		Timestamp: "",
 		Hash:      "",
 		PrevHash:  "",
 	}
-	err := repo.Store(genesis)
+	err := repo.SaveBlock(genesis)
 	if err != nil {
 		return err
 	}
