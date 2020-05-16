@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// Akta ...
+// Akta defines structure of Akta
 type Akta struct {
 	ID         int    `json:"id" gorm:"primary_key"`
 	AktaNumber string `json:"akta_number"`
@@ -18,14 +18,7 @@ type Akta struct {
 	BirthDate  string `json:"birth_date"`
 }
 
-// FromJSON ...
-func FromJSON(str string) (akta Akta, err error) {
-	err = json.Unmarshal([]byte(str), &akta)
-
-	return
-}
-
-// ToJSON ...
+// ToJSON converts Akta model to JSON string format
 func (a Akta) ToJSON() (string, error) {
 	data, err := json.Marshal(&a)
 	if err != nil {
@@ -35,7 +28,7 @@ func (a Akta) ToJSON() (string, error) {
 	return string(data), nil
 }
 
-// NewAkta ...
+// NewAkta creates new Akta model
 func NewAkta(id int, aktaNum, aktaDate, aktaAuth, fullname, fathername, mothername, gender, birthplace, birthdate string) (Akta, error) {
 	return Akta{
 		id,

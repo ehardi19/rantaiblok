@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// SaveAkta ...
+// SaveAkta saves new Akta to Data Pool
 func (s *Service) SaveAkta(akta model.Akta) error {
 
 	err := s.Pool.SaveAkta(akta)
@@ -17,7 +17,7 @@ func (s *Service) SaveAkta(akta model.Akta) error {
 	return nil
 }
 
-// GetAllAkta ...
+// GetAllAkta gets all Akta from Data Pool
 func (s *Service) GetAllAkta() ([]model.Akta, error) {
 	aktas, err := s.Pool.GetAllAkta()
 	if err != nil {
@@ -28,7 +28,7 @@ func (s *Service) GetAllAkta() ([]model.Akta, error) {
 	return aktas, err
 }
 
-// GetAktaByID ...
+// GetAktaByID gets an Akta by ID (int) from Data pool
 func (s *Service) GetAktaByID(id int) (model.Akta, error) {
 	akta, err := s.Pool.GetAktaByID(id)
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *Service) GetAktaByID(id int) (model.Akta, error) {
 	return akta, err
 }
 
-// DeleteAktaByID ...
+// DeleteAktaByID deletes Akta by ID (int) from Data Pool
 func (s *Service) DeleteAktaByID(id int) error {
 	err := s.Pool.DeleteAktaByID(id)
 	if err != nil {

@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// IsValid ..
+// IsValid handles validity function
 func (h *Handler) IsValid(c echo.Context) error {
 	valid, err := h.Service.IsValid()
 
@@ -23,7 +23,7 @@ func (h *Handler) IsValid(c echo.Context) error {
 	})
 }
 
-// SaveBlock ..
+// SaveBlock handles saving block
 func (h *Handler) SaveBlock(c echo.Context) error {
 	var req model.CreateBlockRequest
 
@@ -42,7 +42,7 @@ func (h *Handler) SaveBlock(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"created_at": time.Now()})
 }
 
-// GetAllBlock ..
+// GetAllBlock handles getting all block
 func (h *Handler) GetAllBlock(c echo.Context) error {
 	blocks, err := h.Service.GetAllBlock()
 
@@ -53,7 +53,7 @@ func (h *Handler) GetAllBlock(c echo.Context) error {
 	return c.JSON(http.StatusOK, blocks)
 }
 
-// GetLastBlock ..
+// GetLastBlock handles getting last block
 func (h *Handler) GetLastBlock(c echo.Context) error {
 	block, err := h.Service.GetLastBlock()
 
@@ -64,7 +64,7 @@ func (h *Handler) GetLastBlock(c echo.Context) error {
 	return c.JSON(http.StatusOK, block)
 }
 
-// GetBlockByID ..block
+// GetBlockByID handles getting an block by id
 func (h *Handler) GetBlockByID(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -79,7 +79,7 @@ func (h *Handler) GetBlockByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, block)
 }
 
-// PushToBlock ...
+// PushDataToBlock handles publish block from data pool request
 func (h *Handler) PushDataToBlock(c echo.Context) error {
 	err := h.Service.PushDataToBlock()
 

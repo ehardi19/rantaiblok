@@ -44,6 +44,7 @@ func main() {
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
+// initGenesis generates first block with empty values
 func initGenesis(node1, node2, node3 repository.Repository) error {
 	check, _ := node1.GetAllBlock()
 
