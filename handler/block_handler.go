@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/ehardi19/rantaiblok/model"
 	"github.com/labstack/echo"
@@ -38,7 +39,7 @@ func (h *Handler) SaveBlock(c echo.Context) error {
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
-	return c.JSON(http.StatusCreated, req)
+	return c.JSON(http.StatusCreated, echo.Map{"created_at": time.Now()})
 }
 
 // GetAllBlock ..
@@ -76,4 +77,14 @@ func (h *Handler) GetBlockByID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, block)
+}
+
+// PushToBlock ...
+func (h *Handler) PushDataToBlock(c echo.Context) error {
+	err := h.Service.PushDataToBlock()
+
+	if err != nil {
+		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+	return c.JSON(http.StatusCreated, echo.Map{"created_at": time.Now()})
 }

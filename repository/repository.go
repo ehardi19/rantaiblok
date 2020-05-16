@@ -21,7 +21,6 @@ type Repository interface {
 	SaveAkta(akta model.Akta) error
 	GetAllAkta() ([]model.Akta, error)
 	GetAktaByID(id int) (model.Akta, error)
-	GetAktaByAktaNum(aktaNum string) (model.Akta, error)
 	DeleteAktaByID(id int) error
 }
 

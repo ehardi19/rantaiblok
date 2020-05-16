@@ -8,7 +8,7 @@ import (
 // SaveAkta ...
 func (s *Service) SaveAkta(akta model.Akta) error {
 
-	err := s.Node1.SaveAkta(akta)
+	err := s.Pool.SaveAkta(akta)
 	if err != nil {
 		logrus.Error(err)
 		return err
@@ -39,18 +39,13 @@ func (s *Service) GetAktaByID(id int) (model.Akta, error) {
 	return akta, err
 }
 
-// GetAktaByAktaNum ...
-func (s *Service) GetAktaByAktaNum(aktaNum string) (model.Akta, error) {
-	akta, err := s.Pool.GetAktaByAktaNum(aktaNum)
-	if err != nil {
-		logrus.Error(err)
-		return model.Akta{}, err
-	}
-
-	return akta, err
-}
-
 // DeleteAktaByID ...
 func (s *Service) DeleteAktaByID(id int) error {
-	return nil
+	err := s.Pool.DeleteAktaByID(id)
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	return err
 }

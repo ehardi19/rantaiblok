@@ -12,7 +12,7 @@ type BlockData interface {
 }
 
 type CreateBlockRequest struct {
-	Data Akta `json:"data"`
+	Data string `json:"data"`
 }
 
 // Block ..
@@ -44,11 +44,7 @@ func (block *Block) GenerateHash() string {
 }
 
 // GenerateNewBlock ...
-func GenerateNewBlock(id int, timestamp, prevHash string, data BlockData) (*Block, error) {
-	jsonData, err := data.ToJSON()
-	if err != nil {
-		return nil, err
-	}
+func GenerateNewBlock(id int, timestamp, prevHash, data string) (*Block, error) {
 
 	var nonce int = 0
 	newBlock := Block{
@@ -56,7 +52,7 @@ func GenerateNewBlock(id int, timestamp, prevHash string, data BlockData) (*Bloc
 		timestamp,
 		nonce,
 		prevHash,
-		jsonData,
+		data,
 		"",
 	}
 
@@ -68,7 +64,7 @@ func GenerateNewBlock(id int, timestamp, prevHash string, data BlockData) (*Bloc
 			timestamp,
 			nonce,
 			prevHash,
-			jsonData,
+			data,
 			hash,
 		}
 	}
@@ -78,7 +74,7 @@ func GenerateNewBlock(id int, timestamp, prevHash string, data BlockData) (*Bloc
 		timestamp,
 		nonce,
 		prevHash,
-		jsonData,
+		data,
 		hash,
 	}, nil
 }

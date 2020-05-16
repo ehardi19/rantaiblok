@@ -3,6 +3,7 @@ module github.com/ehardi19/rantaiblok
 go 1.12
 
 require (
+	github.com/blinfoldking/blockchain-go-node v0.0.0-20200515133152-ad940cea050b // indirect
 	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0

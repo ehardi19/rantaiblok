@@ -28,11 +28,19 @@ func main() {
 	}))
 
 	e.GET("/", h.HelloWorld)
+
 	e.GET("/block", h.GetAllBlock)
 	e.GET("/block/:id", h.GetBlockByID)
 	e.GET("/block/last", h.GetLastBlock)
 	e.POST("/block", h.SaveBlock)
 	e.GET("/valid", h.IsValid)
+
+	e.GET("/akta", h.GetAllAkta)
+	e.GET("/akta/:id", h.GetAktaByID)
+	e.POST("/akta", h.SaveAkta)
+	e.DELETE("/akta/:id", h.DeleteAktaByID)
+
+	e.POST("/pool/push", h.PushDataToBlock)
 	e.Logger.Fatal(e.Start(":8000"))
 }
 

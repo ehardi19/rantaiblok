@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/ehardi19/rantaiblok/model"
@@ -195,4 +197,48 @@ func (s *Service) GetBlockByID(id int) (model.Block, error) {
 	}
 
 	return block, err
+}
+
+// PushDataToBlock ...
+func (s *Service) PushDataToBlock() error {
+	// Fetch Pool Database
+	aktas, err := s.Pool.GetAllAkta()
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	// Rule: 3 Data Per Block
+	if len(aktas) < 3 {
+		return errors.New("too few data to process")
+	}
+
+	arrData := []string{}
+	for i := 0; i < 3; i++ {
+		jsonData, err := aktas[i].ToJSON()
+		if err != nil {
+			return err
+		}
+
+		arrData = append(arrData, jsonData)
+	}
+	strData := strings.Join(arrData, ",")
+
+	// Create Block
+	err = s.SaveBlock(model.CreateBlockRequest{Data: strData})
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	// Delete Pushed Data From Pool
+	for i := 0; i < 3; i++ {
+		err = s.Pool.DeleteAktaByID(aktas[i].ID)
+		if err != nil {
+			logrus.Error(err)
+			return err
+		}
+	}
+
+	return nil
 }
