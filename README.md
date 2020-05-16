@@ -1,6 +1,15 @@
 # rantaiblok
 Simple Blockchain Implementation
 
+# Features
+
+* Basic Blockchain
+* Distributed Node
+* REST API
+* Mining Nonce
+* Data Pool
+  
+
 # Installation
 
 Requirements:
@@ -8,13 +17,24 @@ Requirements:
 * [PostgreSQL](https://www.digitalocean.com/community/tutorials/how-to-install-go-on-ubuntu-18-04)
 
 Steps:
+* Clone this repo
+
+    `$ git clone github.com/ehardi19/rantaiblok`
+
+
 * Change .env file with your postgreSQL config & run command
   
-   ` $ createdb rantaiblok`
+   ` $ createdb node1`
+
+    ` $ createdb node2`
+
+   ` $ createdb node3`
+
+   ` $ createdb pool`
+
 
 * Install Depedencies
 
-    `$ go get github.com/ehardi19/rantaiblok`
 
     `$ go mod verify`
 

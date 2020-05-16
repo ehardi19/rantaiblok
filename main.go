@@ -1,70 +1,83 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/ehardi19/rantaiblok/blockchain"
-	"github.com/ehardi19/rantaiblok/blockchain/delivery/http"
-	"github.com/ehardi19/rantaiblok/blockchain/repository"
-	"github.com/ehardi19/rantaiblok/blockchain/usecase"
-	"github.com/ehardi19/rantaiblok/middleware"
-	"github.com/ehardi19/rantaiblok/models"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/joho/godotenv"
+	"github.com/ehardi19/rantaiblok/handler"
+	"github.com/ehardi19/rantaiblok/model"
+	"github.com/ehardi19/rantaiblok/repository"
+	"github.com/ehardi19/rantaiblok/service"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	godotenv.Load()
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbName := os.Getenv("DB_NAME")
-	dbPass := os.Getenv("DB_PASSWORD")
-	port := os.Getenv("PORT")
 
-	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass))
-	if err != nil {
-		panic(fmt.Sprintf("failed to connect to database: %v", err))
-	}
-
+	s := service.New()
+	h := handler.InitHandler(s)
 	e := echo.New()
-	middL := middleware.InitMiddleware()
-	e.Use(middL.CORS)
 
-	repo := repository.NewGormRepository(db)
-	usecase := usecase.NewUsecase(repo)
-
-	err = initGenesis(repo)
+	err := initGenesis(s.Node1, s.Node2, s.Node3)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	http.NewHandler(e, usecase)
-	e.Logger.Fatal(e.Start(port))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
+
+	e.GET("/", h.HelloWorld)
+
+	e.GET("/block", h.GetAllBlock)
+	e.GET("/block/:id", h.GetBlockByID)
+	e.GET("/block/last", h.GetLastBlock)
+	e.POST("/block", h.SaveBlock)
+	e.GET("/valid", h.IsValid)
+
+	e.GET("/akta", h.GetAllAkta)
+	e.GET("/akta/:id", h.GetAktaByID)
+	e.POST("/akta", h.SaveAkta)
+	e.DELETE("/akta/:id", h.DeleteAktaByID)
+
+	e.POST("/pool/push", h.PushDataToBlock)
+	e.Logger.Fatal(e.Start(":8000"))
 }
 
-func initGenesis(repo blockchain.Repository) error {
-	check, _ := repo.Fetch()
+func initGenesis(node1, node2, node3 repository.Repository) error {
+	check, _ := node1.GetAllBlock()
 
 	if len(check) > 0 {
 		return nil
 	}
 
-	genesis := models.Block{
+	genesis := model.Block{
 		ID:        0,
-		Data:      "genesis",
 		Timestamp: "",
-		Hash:      "",
+		Nonce:     0,
 		PrevHash:  "",
+		Data:      "genesis",
 	}
-	err := repo.Store(genesis)
+
+	// Saving to Node1
+	err := node1.SaveBlock(genesis)
 	if err != nil {
 		return err
 	}
+
+	// Saving to Node2
+	err = node2.SaveBlock(genesis)
+	if err != nil {
+		return err
+	}
+
+	// Saving to Node3
+	err = node3.SaveBlock(genesis)
+	if err != nil {
+		return err
+	}
+
+	logrus.Println("genesis created")
 
 	return nil
 }
