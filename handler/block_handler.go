@@ -43,7 +43,7 @@ func (h *Handler) SaveBlock(c echo.Context) error {
 
 // GetAllBlock ..
 func (h *Handler) GetAllBlock(c echo.Context) error {
-	blocks, err := h.Service.Repo.GetAllBlock()
+	blocks, err := h.Service.GetAllBlock()
 
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
@@ -54,7 +54,7 @@ func (h *Handler) GetAllBlock(c echo.Context) error {
 
 // GetLastBlock ..
 func (h *Handler) GetLastBlock(c echo.Context) error {
-	block, err := h.Service.Repo.GetLastBlock()
+	block, err := h.Service.GetLastBlock()
 
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
@@ -69,7 +69,7 @@ func (h *Handler) GetBlockByID(c echo.Context) error {
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
-	block, err := h.Service.Repo.GetBlockByID(id)
+	block, err := h.Service.GetBlockByID(id)
 
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})

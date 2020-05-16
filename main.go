@@ -9,6 +9,7 @@ import (
 	"github.com/ehardi19/rantaiblok/service"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -17,10 +18,11 @@ func main() {
 	h := handler.InitHandler(s)
 	e := echo.New()
 
-	err := initGenesis(s.Repo)
+	err := initGenesis(s.Node1, s.Node2, s.Node3)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 	}))
@@ -34,8 +36,8 @@ func main() {
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
-func initGenesis(repo repository.Repository) error {
-	check, _ := repo.GetAllBlock()
+func initGenesis(node1, node2, node3 repository.Repository) error {
+	check, _ := node1.GetAllBlock()
 
 	if len(check) > 0 {
 		return nil
@@ -48,10 +50,26 @@ func initGenesis(repo repository.Repository) error {
 		Hash:      "",
 		PrevHash:  "",
 	}
-	err := repo.SaveBlock(genesis)
+
+	// Saving to Node1
+	err := node1.SaveBlock(genesis)
 	if err != nil {
 		return err
 	}
+
+	// Saving to Node2
+	err = node2.SaveBlock(genesis)
+	if err != nil {
+		return err
+	}
+
+	// Saving to Node3
+	err = node3.SaveBlock(genesis)
+	if err != nil {
+		return err
+	}
+
+	logrus.Println("genesis created")
 
 	return nil
 }

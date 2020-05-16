@@ -6,12 +6,18 @@ import (
 
 // Service ...
 type Service struct {
-	Repo repository.Repository
+	Node1 repository.Repository
+	Node2 repository.Repository
+	Node3 repository.Repository
+	Pool  repository.Repository
 }
 
 // New ...
 func New() Service {
 	return Service{
-		Repo: repository.Init(),
+		Node1: repository.InitNode1(),
+		Node2: repository.InitNode2(),
+		Node3: repository.InitNode3(),
+		Pool:  repository.InitPool(),
 	}
 }
