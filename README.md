@@ -1,13 +1,36 @@
 # rantaiblok
-Simple Blockchain Implementation
+Simple Blockchain implementation that saving Akta Kelahiran data to blockchain using Golang and PostgreSQL.
 
 # Features
 
-* Basic Blockchain
-* Distributed Node
-* REST API
-* Mining Nonce
-* Data Pool
+## Blockchain Basic
+* Block structures represented as:
+  
+  `Block {ID, Timestamp, Nonce, Previous Hash, Data, Hash}`
+
+* Hash function using SHA256 to generate hash of block.
+* Genesis block (first block) of blockchain that has empty value as:
+  
+  `Block{0, "", 0, "", "", "", ""}`
+* Blockchain that valids if all hash is chained from genesis to last block and synced in every nodes.
+* Other basic blockchain operations.
+    
+## Mining Nonce
+* Mining using nonce to make new valid block.
+* The rule is valid hash of block must be ending with "ace". Example: "1hj2k4k1218ace".
+  
+## Distributed Node
+Using 3 databases as blockchain nodes that synced each other.
+
+## Data Pool
+Using 1 databases as data pool that storing data before pushing to blockchain nodes.
+
+## REST API
+Delivers services of blockchain as REST API.
+
+API Documentation:
+
+https://documenter.getpostman.com/view/5019276/SzKPVgm5?version=latest
   
 
 # Installation
@@ -45,5 +68,3 @@ Steps:
     `$ go run main.go`
 
 
-# Documentation
-https://documenter.getpostman.com/view/5019276/SzKPVgm5?version=latest
